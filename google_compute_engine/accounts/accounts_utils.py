@@ -146,17 +146,18 @@ class AccountsUtils(object):
     Returns:
       bool, True if user update succeeded.
     """
-    groups = ','.join(groups)
-    self.logger.debug('Updating user %s with groups %s.', user, groups)
-    command = ['usermod', '-G', groups, user]
-    try:
-      subprocess.check_call(command)
-    except subprocess.CalledProcessError as e:
-      self.logger.warning('Could not update user %s. %s.', user, str(e))
-      return False
-    else:
-      self.logger.debug('Updated user account %s.', user)
-      return True
+    self.logger.debug('Updating user %s with groups %s.', user, ','.join(groups))
+
+    for group in groups:
+      command = ['adduser', user, group]
+      try:
+        subprocess.check_call(command)
+      except subprocess.CalledProcessError as e:
+        self.logger.warning('Could not update user %s. %s.', user, str(e))
+        return False
+
+    self.logger.debug('Updated user account %s.', user)
+    return True
 
   def _UpdateAuthorizedKeys(self, user, ssh_keys):
     """Update the authorized keys file for a Linux user with a list of SSH keys.
