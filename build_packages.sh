@@ -34,6 +34,11 @@ function build_distro() {
 
   export CONFIG="${init_config}"
 
+  if [[ "${pkg_type}" == 'apk' ]]; then
+    echo 'Invalid build on apk: not currently supported by fpm'
+    return 1
+  fi
+
   if [[ "${pkg_type}" == 'deb' ]]; then
     depends="${depends}-${distro}"
     name="${name}-${distro}"
@@ -97,6 +102,9 @@ for build in "${BUILD[@]}"; do
       ;;
     stretch) # Debian 9
       build_distro 'stretch' 'deb' '/usr/lib/python2.7/dist-packages'
+      ;;
+    alpine)
+      build_distro 'alpine' 'apk' '/usr/lib/python2.7/site-packages'
       ;;
     *)
       echo "Invalid build '${build}'. Use 'el6', 'el7', 'wheezy', 'jessie', or 'stretch'."

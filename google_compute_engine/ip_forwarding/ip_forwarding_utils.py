@@ -108,7 +108,7 @@ class IpForwardingUtils(object):
     Returns:
       list, the IP address strings.
     """
-    args = ['ls', 'table', 'local', 'type', 'local']
+    args = ['list', 'table', 'local', 'type', 'local']
     options = self._CreateRouteOptions(dev=interface)
     result = self._RunIpRoute(args=args, options=options)
     return self.ParseForwardedIps(result.split())
